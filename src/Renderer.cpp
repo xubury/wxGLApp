@@ -1,8 +1,9 @@
 #include "Renderer.hpp"
+#include "Camera.hpp"
 #include "Core/Log.hpp"
 #include "Graphic/GLContext.hpp"
 
-Renderer::Renderer() {
+Renderer::Renderer() : m_camera(te::createRef<Camera>(0, 0, 800, 600)) {
   te::Log::init("Debug.log");
   te::GLContext::init(nullptr);
   const char *vetexCode = "#version 330 core\n"
@@ -32,9 +33,9 @@ Renderer::Renderer() {
   m_buffer->update(vertices, 3, te::GL_TRIANGLES, te::GL_DYNAMIC_DRAW);
 }
 
-void Renderer::render(const te::Ref<te::CameraBase> &camera) {
+void Renderer::render() {
   te::RenderStates states;
-  beginScene(m_shader, camera);
+  beginScene(m_shader, m_camera);
   m_buffer->draw(*this, states);
   endScene();
 }

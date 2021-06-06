@@ -18,18 +18,16 @@ set(MSYS true)
 find_package(wxWidgets REQUIRED net core base gl ribbon adv aui)
 include(${wxWidgets_USE_FILE})
 
-add_executable(wxGLApp src/MainApp.cpp src/GLPanel.cpp src/Renderer.cpp)
+add_executable(wxGLApp src/MainApp.cpp src/GLPanel.cpp src/Renderer.cpp src/Camera.cpp src/Transform.cpp)
 
 set_property(TARGET wxGLApp PROPERTY CXX_STANDARD 17)
 
 target_compile_options(wxGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
 
-target_compile_definitions(wxGLApp PRIVATE __GNUWIN32__ ${wxWidgets_DEFINITIONS})
-
-target_link_directories(wxGLApp PUBLIC ${PROJECT_SOURCE_DIR}/graphic/lib)
+target_compile_definitions(wxGLApp PUBLIC __GNUWIN32__ ${wxWidgets_DEFINITIONS})
 
 target_link_libraries(wxGLApp PUBLIC ${wxWidgets_LIBRARIES} te-graphic)
 
-target_include_directories(wxGLApp PUBLIC include ${wxWidgets_INCLUDE_DIRS} graphic/include)
+target_include_directories(wxGLApp PUBLIC include ${wxWidgets_INCLUDE_DIRS})
 
 target_precompile_headers(wxGLApp PUBLIC include/pch.hpp)

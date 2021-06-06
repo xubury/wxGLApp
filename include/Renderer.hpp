@@ -8,11 +8,14 @@
 class Renderer : public te::RenderTarget {
 public:
   Renderer();
-  void render(const te::Ref<te::CameraBase> &camera);
+  void render();
+
+  te::Ref<te::CameraBase> &getCamera() { return m_camera; }
 
 private:
   te::Ref<te::Shader> m_shader;
   te::Ref<te::VertexBuffer> m_buffer;
+  te::Ref<te::CameraBase> m_camera;
 };
 
 #endif // RENDERER_HPP
