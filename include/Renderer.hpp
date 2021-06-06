@@ -7,6 +7,7 @@
 #include "Graphic/ElementBuffer.hpp"
 #include "Graphic/Model.hpp"
 #include "Camera.hpp"
+#include "Light.hpp"
 
 class Renderer : public te::RenderTarget
 {
@@ -21,10 +22,12 @@ class Renderer : public te::RenderTarget
 
   private:
     te::Ref<te::Shader> m_shader;
+    te::Ref<te::Shader> m_lightShader;
     te::Ref<te::VertexBuffer> m_buffer;
     te::Ref<te::ElementBuffer> m_eBuffer;
     te::Ref<te::Model> m_model;
     te::Ref<Camera> m_camera;
+    te::Ref<Light> m_dirLight;
 };
 
 #endif // RENDERER_HPP

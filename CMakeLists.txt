@@ -18,7 +18,7 @@ set(MSYS true)
 find_package(wxWidgets REQUIRED net core base gl ribbon adv aui)
 include(${wxWidgets_USE_FILE})
 
-add_executable(wxGLApp src/MainApp.cpp src/GLPanel.cpp src/Renderer.cpp src/Camera.cpp src/Transform.cpp)
+add_executable(wxGLApp src/MainApp.cpp src/GLPanel.cpp src/Renderer.cpp src/Camera.cpp src/Transform.cpp src/Light.cpp)
 
 set_property(TARGET wxGLApp PROPERTY CXX_STANDARD 17)
 

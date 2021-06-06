@@ -9,11 +9,24 @@ Renderer::Renderer() : m_camera(te::createRef<Camera>(0, 0, 800, 600))
     te::Log::init("Debug.log");
     te::GLContext::init(nullptr);
 
+    // the main shader
     m_shader = te::createRef<te::Shader>();
     m_shader->load("vertex.glsl", "fragment.glsl");
-    m_shader->bind();
-    m_shader->setVec4("color", glm::vec4(0, 0, 1.0, 1.0));
 
+    const char *shadowVertex = "#version 330 core\n"
+                               "layout (location = 0) in vec3 aPos;\n"
+                               "uniform mat4 uLightSpaceMatrix;\n"
+                               "uniform mat4 uModel;\n"
+                               "void main() {\n"
+                               "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
+                               "}";
+    const char *shadowFragment = "#version 330 core\n"
+                                 "void main() {\n"
+                                 "}";
+
+    // light caster shader
+    m_lightShader = te::createRef<te::Shader>();
+    m_lightShader->compile(shadowVertex, shadowFragment);
     // how to set up a vertex buffer
     te::Vertex triangle[3];
     triangle[0].position = glm::vec3(-1, -1, 0);
@@ -38,6 +51,13 @@ Renderer::Renderer() : m_camera(te::createRef<Camera>(0, 0, 800, 600))
 
     // move the camera
     m_camera->translateLocal(glm::vec3(0, 0, 12));
+
+    m_dirLight = te::createRef<Light>();
+    m_dirLight->setPosition(glm::vec3(0, 0, 10));
+    m_dirLight->setEulerAngle(glm::vec3(0, glm::radians(180.0), 0));
+    m_dirLight->amibent = glm::vec3(0.3);
+    m_dirLight->diffuse = glm::vec3(0.3);
+    m_dirLight->specular = glm::vec3(0.3);
 }
 
 void Renderer::render()
@@ -45,14 +65,30 @@ void Renderer::render()
     // drawing using custom shader
     // projection and view uniform should use name 'uProjection' and 'uView'
     te::RenderStates states;
+    std::vector<te::Ref<te::LightBase>> lights;
+    lights.push_back(m_dirLight);
+
+    // shadow light process
+    std::vector<te::Ref<te::ShadowBuffer>> shadows;
+    for (std::size_t i = 0; i < lights.size(); ++i)
+    {
+        shadows.emplace_back(te::createRef<te::ShadowBuffer>(1024, 1024));
+        shadows.back()->beginScene(m_lightShader, lights[i]);
+        m_model->draw(*shadows.back(), states);
+        shadows.back()->endScene();
+    }
+
+    // normal drawing
     beginScene(m_shader, m_camera);
-    m_buffer->draw(*this, states);
-    m_eBuffer->draw(*this, states);
+    clear();
+    setLighting(lights, shadows);
+    // m_buffer->draw(*this, states);
+    // m_eBuffer->draw(*this, states);
     m_model->draw(*this, states);
     endScene();
 
     // draw simple stuff in world space without a shader
-    te::Primitive::instance().setDrawingView(m_camera);
-    te::Primitive::instance().drawLine(glm::vec3(0), glm::vec3(1), glm::vec4(1.0), 10);
-    te::Primitive::instance().drawCircle(glm::vec3(0), glm::vec3(0, 1, 1), glm::vec4(1.0), 5);
+    // te::Primitive::instance().setDrawingView(m_camera);
+    // te::Primitive::instance().drawLine(glm::vec3(0), glm::vec3(1), glm::vec4(1.0), 10);
+    // te::Primitive::instance().drawCircle(glm::vec3(0), glm::vec3(0, 1, 1), glm::vec4(1.0), 5);
 }

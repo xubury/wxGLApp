@@ -18,7 +18,6 @@ void GLPanel::onRendered(wxPaintEvent &)
         return;
     SetCurrent(*m_context);
     wxPaintDC(this);
-    m_renderer->clear();
     m_renderer->render();
     SwapBuffers();
 }
