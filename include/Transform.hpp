@@ -3,8 +3,9 @@
 
 #include <glm/glm.hpp>
 
-class Transform  {
-   public:
+class Transform
+{
+  public:
     Transform();
 
     void transform(const glm::mat4 &transform);
@@ -37,8 +38,8 @@ class Transform  {
 
     glm::vec3 getFront() const;
 
-   protected:
+  protected:
     glm::mat4 m_transform;
 };
 
-#endif  // TRANSFORM_HPP
+#endif // TRANSFORM_HPP

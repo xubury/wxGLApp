@@ -6,9 +6,10 @@
 #include <wx/wx.h>
 #endif
 
-class MainApp : public wxApp {
-public:
-  virtual bool OnInit() override;
+class MainApp : public wxApp
+{
+  public:
+    virtual bool OnInit() override;
 };
 
 DECLARE_APP(MainApp)

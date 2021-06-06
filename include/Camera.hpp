@@ -8,13 +8,14 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-class Camera : public te::CameraBase, public Transform {
-public:
-  Camera(int x, int y, int width, int height);
+class Camera : public te::CameraBase, public Transform
+{
+  public:
+    Camera(int x, int y, int width, int height);
 
-  virtual glm::mat4 getView() const override;
+    virtual glm::mat4 getView() const override;
 
-  virtual glm::mat4 getProjection() const override;
+    virtual glm::mat4 getProjection() const override;
 };
 
-#endif  // CAMERA_HPP
+#endif // CAMERA_HPP
