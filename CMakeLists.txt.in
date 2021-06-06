@@ -5,7 +5,7 @@ include(ExternalProject)
 Externalproject_Add(
     OpenGLApp
     GIT_TAG           master
-    GIT_REPOSITORY    git@github.com:xubury/OpenGLApp
+    GIT_REPOSITORY    https://github.com/xubury/OpenGLApp
     SOURCE_DIR        "${CMAKE_BINARY_DIR}/OpenGLApp-src"
     BINARY_DIR        "${CMAKE_BINARY_DIR}/OpenGLApp-build"
     CONFIGURE_COMMAND ""
