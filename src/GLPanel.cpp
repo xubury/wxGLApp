@@ -69,11 +69,7 @@ void GLPanel::onRendered(wxPaintEvent &)
     // 绘制一个VAO对象
     te::Renderer::submit(*m_shader, *m_quad, (te::GLenum)GL_TRIANGLE_STRIP, false, transform, m_material.get());
 
-    // 结束绘制
-    te::Renderer::endScene();
-
-
-    // 在世界坐标系下，绘制接口默认提供的一些图形, 不使用shader
+    // 在世界坐标系下，绘制接口默认提供的一些图形, 不接收shader, 使用当前相机的projection * view
     te::Primitive::instance().drawSphere(glm::vec3(0), glm::vec4(0, 1, 0, 1), 0.5f, 20, 20);
     te::Primitive::instance().drawSphereFilled(glm::vec3(0), glm::vec4(1), 0.1f, 20, 20);
     // X axis
@@ -82,6 +78,10 @@ void GLPanel::onRendered(wxPaintEvent &)
     te::Primitive::instance().drawLine(glm::vec3(0), glm::vec3(0, 1, 0), glm::vec4(0, 1, 0, 1), 5);
     // Z axis
     te::Primitive::instance().drawLine(glm::vec3(0), glm::vec3(0, 0, 1), glm::vec4(0, 0, 1, 1), 5);
+
+    // 结束绘制
+    te::Renderer::endScene();
+
     SwapBuffers();
 }
 
