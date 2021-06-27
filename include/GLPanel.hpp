@@ -1,7 +1,13 @@
 #ifndef GL_PANEL_HPP
 #define GL_PANEL_HPP
 
-#include "Renderer.hpp"
+#include "Graphic/Shader.hpp"
+#include "Graphic/Camera.hpp"
+#include "Graphic/VertexArray.hpp"
+#include "Graphic/Buffer.hpp"
+#include "Graphic/GLContext.hpp"
+#include "Graphic/Renderer.hpp"
+#include "Graphic/Primitive.hpp"
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -22,7 +28,10 @@ class GLPanel : public wxGLCanvas
 
   private:
     wxGLContext *m_context;
-    te::Scope<Renderer> m_renderer;
+    te::Ref<te::Shader> m_shader;
+    te::Camera m_camera;
+    te::Ref<te::VertexArray> m_quad;
+    te::Ref<te::Material> m_material;
 };
 
 #endif /* GL_PANEL_HPP */

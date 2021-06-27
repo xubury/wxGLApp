@@ -1,8 +1,6 @@
 #version 330 core
 out vec4 fragColor;
 
-uniform sampler2D uDepthMap;
-
 struct Material {
     sampler2D ambient0;
 
@@ -43,13 +41,15 @@ in vec3 fragPos;
 in vec2 texCoord;
 in vec3 normal;
 in vec3 viewPos;
-in vec4 fragPosLightSpace;
 
 uniform PointLight uPointLight;
-uniform DirLight uDirLight;
+layout (std140) uniform Light
+{
+    mat4 uLightSpaceMatrix;
+    DirLight uDirLight;
+};
 
 uniform Material uMaterial;
-
 
 void main() {
     fragColor = vec4(texture(uMaterial.diffuse0, texCoord).rgb, 1.0);
