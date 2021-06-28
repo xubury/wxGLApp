@@ -1,13 +1,13 @@
 #include "GLPanel.hpp"
-#include <iostream>
 #include "Core/Math.hpp"
 #include <glm/ext/matrix_transform.hpp>
-
+#include <glm/glm.hpp>
+#include <iostream>
 
 GLPanel::GLPanel(wxWindow *parent, wxWindowID win_id, int *displayAttrs, const wxPoint &pos, const wxSize &size,
                  long style, const wxString &name, const wxPalette &palette)
     : wxGLCanvas(parent, win_id, displayAttrs, pos, size, style, name, palette), m_context(new wxGLContext(this)),
-      m_camera(0, 0, size.GetWidth(), size.GetHeight())
+      m_camera(0, 0, size.GetWidth(), size.GetHeight()), m_isFirstMouse(true)
 {
     this->SetCurrent(*m_context);
 
@@ -18,7 +18,6 @@ GLPanel::GLPanel(wxWindow *parent, wxWindowID win_id, int *displayAttrs, const w
     m_shader = te::createRef<te::Shader>();
 
     m_shader->loadFromFile("vertex.glsl", "fragment.glsl");
-
 
     // 创建一个绘制对象(VAO)
     m_quad = te::createRef<te::VertexArray>();
@@ -51,6 +50,7 @@ GLPanel::GLPanel(wxWindow *parent, wxWindowID win_id, int *displayAttrs, const w
 
     Bind(wxEVT_PAINT, &GLPanel::onRendered, this);
     Bind(wxEVT_SIZE, &GLPanel::onResized, this);
+    Bind(wxEVT_MOTION, &GLPanel::onMouseMove, this);
 }
 
 void GLPanel::onRendered(wxPaintEvent &)
@@ -89,5 +89,32 @@ void GLPanel::onResized(wxSizeEvent &event)
 {
     Refresh();
     m_camera.setViewportSize(event.GetSize().GetWidth(), event.GetSize().GetHeight());
+    event.Skip();
+}
+
+void GLPanel::onMouseMove(wxMouseEvent &event)
+{
+    wxPoint mousePos = event.GetPosition();
+    if (event.ButtonIsDown(wxMOUSE_BTN_LEFT))
+    {
+        if (!m_isFirstMouse)
+        {
+            wxPoint offset = (mousePos - m_mouseClickPos);
+            glm::mat4 transform(1.0f);
+            const glm::vec3 &cameraleft = m_camera.getLeft();
+            const glm::vec3 &rotateAround = glm::vec3(0, 0, 0);
+            transform = glm::translate(transform, rotateAround);
+            transform = glm::rotate(transform, glm::radians((float)-offset.x), glm::vec3(0.f, 1.f, 0.f));
+            transform = glm::rotate(transform, glm::radians((float)-offset.y), cameraleft);
+            transform = glm::translate(transform, -rotateAround);
+            m_camera.setTransform(transform * m_camera.getTransform());
+        }
+        else
+        {
+            m_isFirstMouse = false;
+        }
+    }
+    m_mouseClickPos = mousePos;
+    Refresh();
     event.Skip();
 }

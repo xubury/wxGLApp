@@ -26,12 +26,16 @@ class GLPanel : public wxGLCanvas
 
     void onResized(wxSizeEvent &event);
 
+    void onMouseMove(wxMouseEvent &event);
   private:
     wxGLContext *m_context;
     te::Ref<te::Shader> m_shader;
     te::Camera m_camera;
     te::Ref<te::VertexArray> m_quad;
     te::Ref<te::Material> m_material;
+
+    bool m_isFirstMouse;
+    wxPoint m_mouseClickPos;
 };
 
 #endif /* GL_PANEL_HPP */
