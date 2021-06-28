@@ -95,25 +95,30 @@ void GLPanel::onResized(wxSizeEvent &event)
 void GLPanel::onMouseMove(wxMouseEvent &event)
 {
     wxPoint mousePos = event.GetPosition();
+    if (m_isFirstMouse)
+    {
+        m_isFirstMouse = false;
+        m_mouseClickPos = mousePos;
+    }
+
     if (event.ButtonIsDown(wxMOUSE_BTN_LEFT))
     {
-        if (!m_isFirstMouse)
-        {
-            wxPoint offset = (mousePos - m_mouseClickPos);
-            glm::mat4 transform(1.0f);
-            const glm::vec3 &cameraleft = m_camera.getLeft();
-            const glm::vec3 &rotateAround = glm::vec3(0, 0, 0);
-            transform = glm::translate(transform, rotateAround);
-            transform = glm::rotate(transform, glm::radians((float)-offset.x), glm::vec3(0.f, 1.f, 0.f));
-            transform = glm::rotate(transform, glm::radians((float)-offset.y), cameraleft);
-            transform = glm::translate(transform, -rotateAround);
-            m_camera.setTransform(transform * m_camera.getTransform());
-        }
-        else
-        {
-            m_isFirstMouse = false;
-        }
+        wxPoint offset = (mousePos - m_mouseClickPos);
+        glm::mat4 transform(1.0f);
+        const glm::vec3 &cameraleft = m_camera.getLeft();
+        const glm::vec3 &rotateAround = glm::vec3(0, 0, 0);
+        transform = glm::translate(transform, rotateAround);
+        transform = glm::rotate(transform, glm::radians((float)-offset.x), glm::vec3(0.f, 1.f, 0.f));
+        transform = glm::rotate(transform, glm::radians((float)-offset.y), cameraleft);
+        transform = glm::translate(transform, -rotateAround);
+        m_camera.setTransform(transform * m_camera.getTransform());
     }
+    else if (event.ButtonIsDown(wxMOUSE_BTN_RIGHT))
+    {
+        wxPoint offset = (mousePos - m_mouseClickPos);
+        m_camera.translateLocal(glm::vec3(-(float)offset.x / GetSize().x * 2.f, (float)offset.y / GetSize().y * 2.f, 0.f));
+    }
+
     m_mouseClickPos = mousePos;
     Refresh();
     event.Skip();
