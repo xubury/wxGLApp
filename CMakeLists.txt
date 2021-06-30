@@ -18,7 +18,7 @@ set(MSYS true)
 find_package(wxWidgets REQUIRED net core base gl ribbon adv aui)
 include(${wxWidgets_USE_FILE})
 
-add_executable(wxGLApp src/MainApp.cpp src/GLPanel.cpp)
+add_executable(wxGLApp src/MainApp.cpp src/GLPanel.cpp src/Cube.cpp src/EntityBase.cpp)
 
 set_property(TARGET wxGLApp PROPERTY CXX_STANDARD 17)
 
@@ -26,7 +26,7 @@ target_compile_options(wxGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
 
 target_compile_definitions(wxGLApp PUBLIC __GNUWIN32__ ${wxWidgets_DEFINITIONS})
 
-target_link_libraries(wxGLApp PUBLIC ${wxWidgets_LIBRARIES} te-graphic)
+target_link_libraries(wxGLApp PUBLIC ${wxWidgets_LIBRARIES} te-graphic te-ecs)
 
 target_include_directories(wxGLApp PUBLIC include ${wxWidgets_INCLUDE_DIRS})
 

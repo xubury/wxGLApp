@@ -9,6 +9,8 @@
 #include "Graphic/Renderer.hpp"
 #include "Graphic/Primitive.hpp"
 
+#include "Cube.hpp"
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -36,6 +38,8 @@ class GLPanel : public wxGLCanvas
 
     bool m_isFirstMouse;
     wxPoint m_mouseClickPos;
+
+    te::SceneManager<EntityBase> m_scene;
 };
 
 #endif /* GL_PANEL_HPP */

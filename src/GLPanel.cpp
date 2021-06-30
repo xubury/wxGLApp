@@ -48,6 +48,9 @@ GLPanel::GLPanel(wxWindow *parent, wxWindowID win_id, int *displayAttrs, const w
     m_material->loadFromValue(glm::vec3(r, g, b), te::Material::TEXTURE_DIFFUSE);
     m_material->loadFromValue(glm::vec3(0.5f), te::Material::TEXTURE_SPECULAR);
 
+    uint32_t id = m_scene.entities.create<Cube>(2.f, 2.f, 2.f, m_material);
+    m_scene.entities.get(id)->setPosition(glm::vec3(2, 0, 0));
+
     Bind(wxEVT_PAINT, &GLPanel::onRendered, this);
     Bind(wxEVT_SIZE, &GLPanel::onResized, this);
     Bind(wxEVT_MOTION, &GLPanel::onMouseMove, this);
@@ -68,6 +71,11 @@ void GLPanel::onRendered(wxPaintEvent &)
     transform = glm::translate(transform, glm::vec3(0, 0, -2));
     // 绘制一个VAO对象
     te::Renderer::submit(*m_shader, *m_quad, (te::GLenum)GL_TRIANGLE_STRIP, false, transform, m_material.get());
+
+    for (std::size_t i = 0; i < m_scene.entities.size(); ++i)
+    {
+        m_scene.entities.get(i)->draw(*m_shader, glm::mat4(1.0));
+    }
 
     // 在世界坐标系下，绘制接口默认提供的一些图形, 不接收shader, 使用当前相机的projection * view
     te::Primitive::instance().drawSphere(glm::vec3(0), glm::vec4(0, 1, 0, 1), 0.5f, 20, 20);
@@ -116,7 +124,8 @@ void GLPanel::onMouseMove(wxMouseEvent &event)
     else if (event.ButtonIsDown(wxMOUSE_BTN_RIGHT))
     {
         wxPoint offset = (mousePos - m_mouseClickPos);
-        m_camera.translateLocal(glm::vec3(-(float)offset.x / GetSize().x * 2.f, (float)offset.y / GetSize().y * 2.f, 0.f));
+        m_camera.translateLocal(
+            glm::vec3(-(float)offset.x / GetSize().x * 2.f, (float)offset.y / GetSize().y * 2.f, 0.f));
     }
 
     m_mouseClickPos = mousePos;
